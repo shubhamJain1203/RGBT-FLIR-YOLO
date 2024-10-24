@@ -10,7 +10,7 @@
 
 
 ## Intro
-Official Code for [Cross-Modality Fusion Transformer for Multispectral Object Detection](https://arxiv.org/abs/2111.00273).
+(Paper)[Cross-Modality Fusion Transformer for Multispectral Object Detection](https://arxiv.org/abs/2111.00273).
 
 Multispectral Object Detection with Transformer and Yolov5
 
@@ -38,8 +38,6 @@ Extensive experiments and ablation studies on multiple datasets demonstrate that
 </div>
 
 ## Citation
-If you use this repo for your research, please cite our paper:
-
 ```
 @article{qingyun2022cross,
   title={Cross-modality attentive feature fusion for object detection in multispectral remote sensing imagery},
@@ -62,6 +60,7 @@ If you use this repo for your research, please cite our paper:
 
 ## Installation 
 Python>=3.6.0 is required with all requirements.txt installed including PyTorch>=1.7 (The same as yolov5 https://github.com/ultralytics/yolov5 ).
+(just run): pip install ultralytics
 
 #### Clone the repo
     git clone https://github.com/DocF/multispectral-object-detection
