@@ -63,19 +63,14 @@ Python>=3.6.0 is required with all requirements.txt installed including PyTorch>
 
 
 #### Create Virtual environment
-    ```bash
     python -m venv env
     source env/bin/activate
-    ```
+    
 #### Install YOLO5 using pip
-    ```bash
     pip install ultralytics
-    ```
     
 #### Clone the repo
-    ```bash
     git clone https://github.com/DocF/multispectral-object-detection
-    ```
   
 #### Install requirements
  ```bash
