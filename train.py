@@ -16,7 +16,8 @@ import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 import torch.utils.data
 import yaml
-from torch.cuda import amp
+# from torch.cuda import amp
+from torch import amp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
@@ -309,7 +310,7 @@ def train(hyp, opt, device, tb_writer=None):
                     imgs = F.interpolate(imgs, size=ns, mode='bilinear', align_corners=False)
 
             # Forward
-            with amp.autocast(enabled=cuda):
+            with amp.autocast('cuda',enabled=cuda):
                 pred = model(imgs)  # forward
                 loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
                 if rank != -1:
@@ -675,7 +676,7 @@ def train_rgb_ir(hyp, opt, device, tb_writer=None):
     maps = np.zeros(nc)  # mAP per class
     results = (0, 0, 0, 0, 0, 0, 0)  # P, R, mAP@.5, mAP@.5-.95, val_loss(box, obj, cls)
     scheduler.last_epoch = start_epoch - 1  # do not move
-    scaler = amp.GradScaler(enabled=cuda)
+    scaler = amp.GradScaler('cuda',enabled=cuda)
     compute_loss = ComputeLoss(model)  # init loss class
     logger.info(f'Image sizes {imgsz} train, {imgsz_test} test\n'
                 f'Using {dataloader.num_workers} dataloader workers\n'
@@ -717,19 +718,19 @@ def train_rgb_ir(hyp, opt, device, tb_writer=None):
             imgs_ir = imgs[:, 3:, :, :]
 
             # FQY my code 训练数据可视化
-            flage_visual = global_var.get_value('flag_visual_training_dataset')
-            if flage_visual:
-                from torchvision import transforms
-                unloader = transforms.ToPILImage()
-                for num in range(batch_size):
-                    image = imgs[num, :3, :, :].cpu().clone()  # clone the tensor
-                    image = image.squeeze(0)  # remove the fake batch dimension
-                    image = unloader(image)
-                    image.save('example_%s_%s_%s_color.jpg'%(str(epoch), str(i), str(num)))
-                    image = imgs[num, 3:, :, :].cpu().clone()  # clone the tensor
-                    image = image.squeeze(0)  # remove the fake batch dimension
-                    image = unloader(image)
-                    image.save('example_%s_%s_%s_ir.jpg'%(str(epoch), str(i), str(num)))
+            # flage_visual = global_var.get_value('flag_visual_training_dataset')
+            # if flage_visual:
+            #     from torchvision import transforms
+            #     unloader = transforms.ToPILImage()
+            #     for num in range(batch_size):
+            #         image = imgs[num, :3, :, :].cpu().clone()  # clone the tensor
+            #         image = image.squeeze(0)  # remove the fake batch dimension
+            #         image = unloader(image)
+            #         image.save('example_%s_%s_%s_color.jpg'%(str(epoch), str(i), str(num)))
+            #         image = imgs[num, 3:, :, :].cpu().clone()  # clone the tensor
+            #         image = image.squeeze(0)  # remove the fake batch dimension
+            #         image = unloader(image)
+            #         image.save('example_%s_%s_%s_ir.jpg'%(str(epoch), str(i), str(num)))
 
 
             # Warmup
@@ -752,7 +753,7 @@ def train_rgb_ir(hyp, opt, device, tb_writer=None):
                     imgs = F.interpolate(imgs, size=ns, mode='bilinear', align_corners=False)
 
             # Forward
-            with amp.autocast(enabled=cuda):
+            with amp.autocast("cuda",enabled=cuda):
                 # pred = model(imgs)  # forward
                 pred = model(imgs_rgb, imgs_ir)  # forward
                 loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
