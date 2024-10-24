@@ -9,8 +9,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/DocF/multispectral-object-detection.svg?style=social&label=Stars)](https://github.com/DocF/multispectral-object-detection)
 
 
-## Intro
-(Paper)[Cross-Modality Fusion Transformer for Multispectral Object Detection](https://arxiv.org/abs/2111.00273).
+## Paper
+[Cross-Modality Fusion Transformer for Multispectral Object Detection](https://arxiv.org/abs/2111.00273).
 
 Multispectral Object Detection with Transformer and Yolov5
 
@@ -60,10 +60,22 @@ Extensive experiments and ablation studies on multiple datasets demonstrate that
 
 ## Installation 
 Python>=3.6.0 is required with all requirements.txt installed including PyTorch>=1.7 (The same as yolov5 https://github.com/ultralytics/yolov5 ).
-(just run): pip install ultralytics
 
+
+#### Create Virtual environment
+    ```bash
+    python -m venv env
+    source env/bin/activate
+    ```
+#### Install YOLO5 using pip
+    ```bash
+    pip install ultralytics
+    ```
+    
 #### Clone the repo
+    ```bash
     git clone https://github.com/DocF/multispectral-object-detection
+    ```
   
 #### Install requirements
  ```bash
@@ -72,16 +84,6 @@ $ pip install -r requirements.txt
 ```
 
 ## Dataset
--[FLIR]  [[Google Drive]](http://shorturl.at/ahAY4) [[Baidu Drive]](https://pan.baidu.com/s/1z2GHVD3WVlGsVzBR1ajSrQ?pwd=qwer) ```extraction code:qwer``` 
-
-  A new aligned version.
-
--[LLVIP]  [download](https://github.com/bupt-ai-cz/LLVIP)
-
--[VEDAI]  [download](https://downloads.greyc.fr/vedai/)
-
-
-You need to convert all annotations to YOLOv5 format.
 
 Refer: https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data
 
