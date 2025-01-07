@@ -4,6 +4,7 @@ from pathlib import Path
 
 import cv2
 import torch
+import torch.nn as nn
 import torch.backends.cudnn as cudnn
 import numpy as np
 from numpy import random
@@ -15,6 +16,13 @@ from utils.general import check_img_size, check_requirements, check_imshow, non_
 from utils.plots import colors, plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized
 
+# replace all torch-10 GELU's by torch-12 GELU
+def torchmodify(name) :
+    a=name.split('.')
+    for i,s in enumerate(a) :
+        if s.isnumeric() :
+            a[i]="_modules['"+s+"']"
+    return '.'.join(a)
 
 def detect(opt):
     source1, source2, weights, view_img, save_txt, imgsz = opt.source1, opt.source2, opt.weights, opt.view_img, opt.save_txt, opt.img_size
@@ -39,6 +47,10 @@ def detect(opt):
     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
     if half:
         model.half()  # to FP16
+
+    for name, module in model.named_modules() :
+        if isinstance(module,nn.GELU) :
+            exec('model.'+torchmodify(name)+'=nn.GELU()')
 
     # Second-stage classifier
     classify = False
@@ -196,9 +208,9 @@ def detect(opt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/fqy/proj/multispectral-object-detection/best.pt', help='model.pt path(s)')
-    parser.add_argument('--source1', type=str, default='/home/fqy/DATA/FLIR_ADAS_1_3/align/yolo/test/rgb/', help='source')  # file/folder, 0 for webcam
-    parser.add_argument('--source2', type=str, default='/home/fqy/DATA/FLIR_ADAS_1_3/align/yolo/test/ir', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--weights', nargs='+', type=str, default='/mnt/d/my_projects/rgbt-project/multispectral-object-detection/runs/train/exp3/weights/best.pt', help='model.pt path(s)')
+    parser.add_argument('--source1', type=str, default='/mnt/d/my_projects/rgbt-project/FLIR_ADAS_v2/video_rgb_test/data', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--source2', type=str, default='/mnt/d/my_projects/rgbt-project/FLIR_ADAS_v2/video_thermal_test/data', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
